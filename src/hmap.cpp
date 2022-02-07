@@ -23,7 +23,6 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 
   sensor_msgs::PointCloud2 output;
   pcl_conversions::fromPCL(cloud_filtered, output);
-  std::cout << "check" << std:endl;
   pub.publish(output);
 }
 
