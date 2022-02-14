@@ -1,22 +1,32 @@
 <launch>
-  <arg name="serial_no_camera1"    			default="902112061985"/>
+  <arg name="device_type_camera1"    		default="d4.5"/>
+  <arg name="serial_no_camera1"    			default="902112061985"/> <!--D415-->
   <arg name="camera1"              			default="camera1"/>	
   <arg name="tf_prefix_camera1"         default="$(arg camera1)"/>
 
-  <arg name="serial_no_camera2"    			default="146222253687"/>
+  <arg name="device_type_camera2"    		default="d4.5"/>
+  <arg name="serial_no_camera2"    			default="146222253687"/> <!--D455-->
   <arg name="camera2"              			default="camera2"/>
   <arg name="tf_prefix_camera2"         default="$(arg camera2)"/>
 
-  <!-- <arg name="serial_no_camera3"    			default="911412110713"/> 
-  <arg name="camera3"              			default="camera3"/>
-  <arg name="tf_prefix_camera3"         default="$(arg camera3)"/> -->
+  <arg name="device_type_camera3"    		default="t265"/>
+  <arg name="serial_no_camera3"    			default="911412110713"/> 
+  <arg name="camera3"              			default="t265"/>
+  <arg name="tf_prefix_camera3"         default="$(arg camera3)"/>
 
   <arg name="initial_reset"             default="false"/>
   <arg name="reconnect_timeout"         default="6.0"/>
+  <arg name="enable_fisheye"            default="false"/>
+  <arg name="topic_odom_in"             default="odom_in"/>
+  <arg name="calib_odom_file"           default=""/>
 
   <group ns="$(arg camera1)">
+    <rosparam>
+      /camera1/rgb_camera/power_line_frequency: 2 
+    </rosparam>
     <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
-      <arg name="serial_no"             value="$(arg serial_no_camera1)"/>
+      <arg name="device_type"       value="$(arg device_type_camera1)"/>
+      <arg name="serial_no"         value="$(arg serial_no_camera1)"/>
       <arg name="depth_width"       value="640"/>
       <arg name="depth_height"      value="480"/>
       <arg name="depth_fps"         value="30"/>
@@ -39,8 +49,12 @@
   </group>
 
   <group ns="$(arg camera2)">
+    <rosparam>
+      /camera2/rgb_camera/power_line_frequency: 2 
+    </rosparam>
     <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
-      <arg name="serial_no"             value="$(arg serial_no_camera2)"/>
+      <arg name="device_type"       value="$(arg device_type_camera2)"/>
+      <arg name="serial_no"         value="$(arg serial_no_camera2)"/>
       <arg name="depth_width"       value="640"/>
       <arg name="depth_height"      value="480"/>
       <arg name="depth_fps"         value="30"/>
@@ -62,12 +76,23 @@
     </include>
   </group>
 
-  <!-- <group ns="$(arg camera3)" if="$(eval serial_no_camera3 != '')">
+  <group ns="$(arg camera3)">
+    <rosparam>
+      /t265/tracking_module/frames_queue_size: 16
+    </rosparam>
     <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="device_type"           value="$(arg device_type_camera3)"/>
       <arg name="serial_no"             value="$(arg serial_no_camera3)"/>
       <arg name="tf_prefix"		          value="$(arg tf_prefix_camera3)"/>
       <arg name="initial_reset"         value="$(arg initial_reset)"/>
       <arg name="reconnect_timeout"     value="$(arg reconnect_timeout)"/>
+      <arg name="enable_fisheye1"       value="$(arg enable_fisheye)"/>
+      <arg name="enable_fisheye2"       value="$(arg enable_fisheye)"/>
+      <arg name="topic_odom_in"         value="$(arg topic_odom_in)"/>
+      <arg name="calib_odom_file"       value="$(arg calib_odom_file)"/>
+      <arg name="enable_pose"           value="true"/>
     </include>
-  </group> -->
+  </group>
+  <node pkg="tf" type="static_transform_publisher" name="t265_to_d415" args="5 0 0 0 0 0 /$(arg tf_prefix_camera1)_link /$(arg tf_prefix_camera3)_link 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="t265_to_d455" args="-5 0 0 0 0 0 /$(arg tf_prefix_camera2)_link /$(arg tf_prefix_camera3)_link 100"/>
 </launch>
