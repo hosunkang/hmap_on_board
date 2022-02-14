@@ -16,5 +16,5 @@ include_directories((${PCL_INCLUDE_DIRS}))
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(hmap src/hmap.cpp)
-target_link_libraries(hmap ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+add_executable(hmap_on_board src/hmap.cpp src/quadtree.cpp)
+target_link_libraries(hmap_on_board ${catkin_LIBRARIES} ${PCL_LIBRARIES})
