@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "get_pc");
   ros::NodeHandle nh;
-  ros::Subscriber sub=nh.subscribe("/camera/depth/color/points", 1, cloud_cb);
+  ros::Subscriber sub=nh.subscribe("/camera2/depth/color/points", 1, cloud_cb);
 
   pub = nh.advertise<sensor_msgs::PointCloud2> ("output",1);
   ros::spin();
